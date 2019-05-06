@@ -1,0 +1,24 @@
+Derek Song
+Daniel Keriazis
+Ryan Aday
+pd 07
+---------------------
+
+Your team has been contracted to create a web log hosting site. Users will have to register to use the site.
+Logged-in users will be able to create a new blog, update their blog by adding a new entry, view and edit their own past entries, and view the blogs of other users
+
+
+ ______   ______   __   __   __       ______   _______
+/_____/\ /_____/\ /_/\ /_/\ /_/\     /_____/\ /______/\
+\:::_ \ \\::::_\/_\:\ \\ \ \\:\ \    \:::_ \ \\::::__\/__
+ \:\ \ \ \\:\/___/\\:\ \\ \ \\:\ \    \:\ \ \ \\:\ /____/\
+  \:\ \ \ \\::___\/_\:\_/.:\ \\:\ \____\:\ \ \ \\:\\_  _\/
+   \:\/.:| |\:\____/\\ ..::/ / \:\/___/\\:\_\ \ \\:\_\ \ \
+    \____/_/ \_____\/ \___/_(   \_____\/ \_____\/ \_____\/
+==============================================================
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+ryanA -- 2019-05-06 13:44
+Made devlog
+
