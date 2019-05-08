@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, f
 
 
 app = Flask(__name__)
-app.secret_key = urandom(32)
+
 
 @app.route("/", methods=["GET"])
 def index():
