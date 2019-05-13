@@ -201,7 +201,7 @@ def update() -> str:
         'player_id': str,
         'point': {
             'x': int,
-            'y': int
+            'y': int,
         }
     }
     data = cast(
@@ -238,7 +238,7 @@ def end() -> str:
     """
     end_type = {
         'room_id': str,
-        'player_id': str
+        'player_id': str,
     }
     data = cast(
         Optional[Dict[str, str]], safe_loads(request.get_json(), end_type),
@@ -271,7 +271,7 @@ def vote() -> str:
     end_type = {
         'room_id': str,
         'player_id': str,
-        "fake_arist_pos": int
+        "fake_arist_pos": int,
     }
     data = cast(
         Optional[Dict[str, Union[str, int]]],
