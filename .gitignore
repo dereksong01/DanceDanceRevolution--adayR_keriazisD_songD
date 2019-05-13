@@ -25,6 +25,8 @@
 
 # Config files
 config.*
+!*/config.*
+config/
 !sample/*
 
 # Python #
