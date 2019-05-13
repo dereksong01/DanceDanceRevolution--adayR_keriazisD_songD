@@ -30,6 +30,7 @@ class Room:
         self.round = 0
         self.fake = ''
         self.votes: Counter[PlayerId] = Counter()
+        self.has_voted: Dict[PlayerId, bool] = {}
 
     def status_json(self: 'Room') -> str:
         result = {'status': self.status.name}
@@ -45,6 +46,7 @@ class Room:
         shuffle(self.order)
         self.round += 1
         self.fake = choice(self.order)
+        self.has_voted[self.fake] = True
         self.status = RoomStatus.IN_GAME
         return True
 
@@ -67,8 +69,16 @@ class Room:
     def vote(self: 'Room', player_id: PlayerId, fake_arist_pos: int) -> bool:
         if self.status is not RoomStatus.CASTING:
             return False
-        if fake_arist_pos >= len(self.order):
-            return False
+        self.has_voted[player_id] = True
+        if fake_arist_pos < 0 or fake_arist_pos >= len(self.order):
+            return True  # Abstained from voting
         self.votes[self.order[fake_arist_pos]] += 1
+        if all(self.has_voted.values()):
+            self.status = RoomStatus.RESULTS
         return True
+
+    def results(self: 'Room') -> str:
+        if self.status is not RoomStatus.RESULTS:
+            return ''  # TODO: Better error handling
+        return ''  # TODO: Implement this
 
