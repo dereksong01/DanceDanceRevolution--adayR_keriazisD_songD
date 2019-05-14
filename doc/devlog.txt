@@ -22,3 +22,6 @@ Logged-in users will be able to create a new blog, update their blog by adding a
 ryanA -- 2019-05-06 13:44
 Made devlog
 
+ryanA -- 2019-05-14 1:29
+Modified doc folder
+
