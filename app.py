@@ -12,7 +12,7 @@ from util.canvas import Point
 from util.config import config
 
 app = Flask(__name__)
-c = config()
+#  c = config()
 
 rooms: Dict[RoomId, Room] = {}
 
