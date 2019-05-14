@@ -1,7 +1,7 @@
 # Team DanceDanceRevolution
 
 from json import dumps
-from typing import Dict, Optional, Union, cast
+from typing import Dict, Optional, Union, cast, NamedTuple
 
 from flask import Flask, render_template, request
 
@@ -9,8 +9,10 @@ from util.safe_json import coerce_type
 from util.room import RoomId, Room, RoomStatus
 from util.player import Player
 from util.canvas import Point
+from util.config import config
 
 app = Flask(__name__)
+c = config()
 
 rooms: Dict[RoomId, Room] = {}
 
@@ -35,21 +37,16 @@ def join() -> str:
         "player_id": <player_id>
     }
     """
-    join_type = {
-        'name': str,
-        'room_id': str,
-    }
-    data = cast(
-        Optional[Dict[str, str]], coerce_type(request.get_json(), join_type),
-    )
+    class Join(NamedTuple):
+        name: str
+        room_id: str
+    data = cast(Optional[Join], coerce_type(request.get_json(), Join))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = data['room_id']
-    name = data['name']
-    p = Player(name)  # Create player with `name`
-    if room_id not in rooms:
+    p = Player(data.name)  # Create player with `name`
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
+    r = rooms[data.room_id]
     r.players[p.id] = p  # Add `p` to the room
     result = {'player_id': p.id}  # Create result data
     return dumps(result)
@@ -71,16 +68,12 @@ def create() -> str:
         "player_id": <player_id>
     }
     """
-    create_type = {
-        'name': str,
-    }
-    data = cast(
-        Optional[Dict[str, str]], coerce_type(request.get_json(), create_type),
-    )
+    class Create(NamedTuple):
+        name: str
+    data = cast(Optional[Create], coerce_type(request.get_json(), Create))
     if data is None:
         return ''  # TODO: Better error handling
-    name = data['name']
-    p = Player(name)  # Create player with `name`
+    p = Player(data.name)  # Create player with `name`
     r = Room()  # Create a new room
     r.players[p.id] = p  # Add `p` to the room
     rooms[r.id] = r  # Add the room to `rooms`
@@ -103,18 +96,14 @@ def start() -> str:
         "room_id": <room_id>
     }
     """
-    start_type = {
-        'room_id': str,
-    }
-    data = cast(
-        Optional[Dict[str, str]], coerce_type(request.get_json(), start_type),
-    )
+    class Start(NamedTuple):
+        room_id: str
+    data = cast(Optional[Start], coerce_type(request.get_json(), Start))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = data['room_id']
-    if room_id not in rooms:
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
+    r = rooms[data.room_id]
     success = r.start_game()
     if not success:
         return ''  # TODO: Better error handling
@@ -143,21 +132,16 @@ def wait() -> str:
         ]
     }
     """
-    status_type = {
-        'room_id': str,
-        'player_id': str,
-    }
-    data = cast(
-        Optional[Dict[str, str]], coerce_type(request.get_json(), status_type),
-    )
+    class Status(NamedTuple):
+        room_id: str
+        player_id: str
+    data = cast(Optional[Status], coerce_type(request.get_json(), Status))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = data['room_id']
-    player_id = data['player_id']
-    if room_id not in rooms:
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
-    return r.wait_json(player_id)
+    r = rooms[data.room_id]
+    return r.wait_json(data.player_id)
 
 
 @app.route('/info')
@@ -175,18 +159,14 @@ def info() -> str:
         "status": <status>
     }
     """
-    info_type = {
-        'room_id': str,
-    }
-    data = cast(
-        Optional[Dict[str, str]], coerce_type(request.get_json(), info_type),
-    )
+    class Info(NamedTuple):
+        room_id: str
+    data = cast(Optional[Info], coerce_type(request.get_json(), Info))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = data['room_id']
-    if room_id not in rooms:
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
+    r = rooms[data.room_id]
     result = {'status': r.status.name}
     return dumps(result)
 
@@ -206,31 +186,24 @@ def update() -> str:
         }
     }
     """
-    update_type = {
-        'room_id': str,
-        'player_id': str,
-        'point': {
-            'x': int,
-            'y': int,
-        }
-    }
-    data = cast(
-        Optional[Dict[str, Union[str, Dict[str, int]]]],
-        coerce_type(request.get_json(), update_type),
-    )
+    class PointTuple(NamedTuple):
+        x: int
+        y: int
+    class Update(NamedTuple):
+        room_id: str
+        player_id: str
+        point: PointTuple
+    data = cast(Optional[Update], coerce_type(request.get_json(), Update))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = cast(str, data['room_id'])
-    player_id = cast(str, data['player_id'])
-    point = cast(Dict[str, int], data['point'])
-    if room_id not in rooms:
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
-    if player_id not in r.players:
+    r = rooms[data.room_id]
+    if data.player_id not in r.players:
         return ''  # TODO: Better error handling
-    player = r.players[player_id]
+    player = r.players[data.player_id]
     color = player.color
-    p = Point(point['x'], point['y'], color)
+    p = Point(data.point.x, data.point.y, color)
     r.canvas.add(p)
     return ''
 
@@ -246,21 +219,16 @@ def end() -> str:
         "player_id": <player_id>
     }
     """
-    end_type = {
-        'room_id': str,
-        'player_id': str,
-    }
-    data = cast(
-        Optional[Dict[str, str]], coerce_type(request.get_json(), end_type),
-    )
+    class End(NamedTuple):
+        room_id: str
+        player_id: str
+    data = cast(Optional[End], coerce_type(request.get_json(), End))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = data['room_id']
-    player_id = data['player_id']
-    if room_id not in rooms:
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
-    success = r.end_turn(player_id)
+    r = rooms[data.room_id]
+    success = r.end_turn(data.player_id)
     if not success:
         return ''  # TODO: Better error handling
     return ''
@@ -278,24 +246,17 @@ def vote() -> str:
         "fake_arist_pos": <fake_arist_pos>
     }
     """
-    end_type = {
-        'room_id': str,
-        'player_id': str,
-        "fake_arist_pos": int,
-    }
-    data = cast(
-        Optional[Dict[str, Union[str, int]]],
-        coerce_type(request.get_json(), end_type),
-    )
+    class Vote(NamedTuple):
+        room_id: str
+        player_id: str
+        fake_arist_pos: int
+    data = cast(Optional[Vote], coerce_type(request.get_json(), Vote))
     if data is None:
         return ''  # TODO: Better error handling
-    room_id = cast(str, data['room_id'])
-    player_id = cast(str, data['player_id'])
-    fake_arist_pos = cast(int, data['fake_arist_pos'])
-    if room_id not in rooms:
+    if data.room_id not in rooms:
         return ''  # TODO: Better error handling
-    r = rooms[room_id]
-    success = r.vote(player_id, fake_arist_pos)
+    r = rooms[data.room_id]
+    success = r.vote(data.player_id, data.fake_arist_pos)
     if not success:
         return ''  # TODO: Better error handling
     return ''

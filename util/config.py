@@ -1,4 +1,4 @@
-from typing import Dict, Optional, cast
+from typing import Dict, Optional, NamedTuple, cast
 
 from util.safe_json import safe_loads, OnError
 from util.files import read_file
@@ -10,10 +10,11 @@ config_type = {
     'https_enabled': bool,
 }
 
-def config() -> Dict[str, str]:
+class Config(NamedTuple):
+    url: str
+    https_enabled: bool
+
+def config() -> Config:
     s = read_file(CONFIG_PATH)
-    return cast(
-        Dict[str, str],
-        safe_loads(s, config_type, OnError.RAISE_EXCEPTION),
-    )
+    return cast(Config, safe_loads(s, Config, OnError.RAISE_EXCEPTION))
 

@@ -10,8 +10,8 @@ class OnError(Enum):
     RAISE_EXCEPTION = auto()
 
 InType = Union[int, float, str, bool, List['InType'], Dict[str, 'InType']]
-OutType = Union[type, List['OutType'], Dict[str, 'OutType']]
-ReturnType = Union[None, int, float, str, bool, List['ReturnType'], Dict[str, 'ReturnType']]
+OutType = Union[type, List['OutType']]
+ReturnType = Union[None, int, float, str, bool, List['ReturnType']]
 
 def coerce_type(
         d: InType, t: OutType, on_error: OnError = OnError.RETURN_NONE,
@@ -19,6 +19,7 @@ def coerce_type(
     """
     Known issues:
     - Exception messages can be very wrong about what the actual error was
+    - IGNORE does not really ignore errors
     - Because `bool` is a subclass of `int`, booleans are allowed to pass
     as integers in our coercion. This is currently WONTFIX since booleans
     are allowed to be used in all circumstances integers are allowed to be
@@ -61,7 +62,9 @@ def coerce_type(
                 # that our enumeration was exhaustive
                 assert False
         return result_list
-    elif isinstance(t, dict):
+    #  elif isinstance(t, dict):
+    elif hasattr(t, '_field_types'):  # NamedTuple
+        field_types = t._field_types
         if not isinstance(d, dict):
             if on_error is OnError.SET_FIELDS_NONE:
                 return None
@@ -76,8 +79,10 @@ def coerce_type(
             assert False
         result_dict: Dict[str, ReturnType] = {}
         for k in d:
-            if k in t:
-                v = coerce_type(d[k], t[k], on_error)
+            #  if k in t:
+            if k in field_types:
+                #  v = coerce_type(d[k], t[k], on_error)
+                v = coerce_type(d[k], field_types[k], on_error)
                 if v is None:
                     if on_error is OnError.RETURN_NONE:
                         return None
@@ -86,7 +91,7 @@ def coerce_type(
                 result_dict[k] = v
             else:
                 if on_error is OnError.SET_FIELDS_NONE:
-                    result_dict[k] = None
+                    #  result_dict[k] = None
                     continue
                 elif on_error is OnError.RETURN_NONE:
                     return None
@@ -97,21 +102,25 @@ def coerce_type(
                 # We raise an exception to assure static checkers
                 # that our enumeration was exhaustive
                 assert False
-        if len(result_dict) < len(t):
+        #  if len(result_dict) < len(t):
+        if len(result_dict) < len(field_types):
             if on_error is OnError.RETURN_NONE:
                 return None
-            elif on_error is OnError.SET_FIELDS_NONE:
-                for k in t:
+            #  elif on_error is OnError.SET_FIELDS_NONE:
+            elif on_error is OnError.SET_FIELDS_NONE or on_error is OnError.IGNORE:
+                #  for k in t:
+                for k in field_types:
                     if k not in result_dict:
                         result_dict[k] = None
             elif on_error is OnError.RAISE_EXCEPTION:
                 raise TypeError(
-                    f'Expected {len(t)} keys but got ' \
+                    f'Expected {len(field_types)} keys but got ' \
                     f'{len(result_dict)} keys'
                 )
-            else:
-                pass  # Explicit 'do nothing'
-        return result_dict
+            #  else:
+                #  pass  # Explicit 'do nothing'
+        #  return result_dict
+        return t(**result_dict)
     else:
         if isinstance(d, t):
             return d
