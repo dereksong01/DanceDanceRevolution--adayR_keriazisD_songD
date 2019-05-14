@@ -32,8 +32,15 @@ class Room:
         self.votes: Counter[PlayerId] = Counter()
         self.has_voted: Dict[PlayerId, bool] = {}
 
-    def status_json(self: 'Room') -> str:
-        result = {'status': self.status.name}
+    def wait_json(self: 'Room', player_id: PlayerId) -> str:
+        players = [
+            {
+                'name': p.name,
+                'color': p.color,
+            }
+            for p in self.players.values()
+        ]
+        result = {'status': self.status.name, 'players': players}
         return dumps(result)
 
     def info_json(self: 'Room') -> str:

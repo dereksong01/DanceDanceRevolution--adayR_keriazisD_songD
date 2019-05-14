@@ -5,7 +5,7 @@ from typing import Dict, Optional, Union, cast
 
 from flask import Flask, render_template, request
 
-from util.safe_json import safe_loads
+from util.safe_json import coerce_type
 from util.room import RoomId, Room, RoomStatus
 from util.player import Player
 from util.canvas import Point
@@ -40,7 +40,7 @@ def join() -> str:
         'room_id': str,
     }
     data = cast(
-        Optional[Dict[str, str]], safe_loads(request.get_json(), join_type),
+        Optional[Dict[str, str]], coerce_type(request.get_json(), join_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
@@ -67,6 +67,7 @@ def create() -> str:
 
     Returns a string in the following JSON format:
     {
+        "room_id": <room_id>,
         "player_id": <player_id>
     }
     """
@@ -74,7 +75,7 @@ def create() -> str:
         'name': str,
     }
     data = cast(
-        Optional[Dict[str, str]], safe_loads(request.get_json(), create_type),
+        Optional[Dict[str, str]], coerce_type(request.get_json(), create_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
@@ -83,7 +84,7 @@ def create() -> str:
     r = Room()  # Create a new room
     r.players[p.id] = p  # Add `p` to the room
     rooms[r.id] = r  # Add the room to `rooms`
-    result = {'player_id': p.id}  # Create result data
+    result = {'room_id': r.id, 'player_id': p.id}  # Create result data
     return dumps(result)
 
 
@@ -106,7 +107,7 @@ def start() -> str:
         'room_id': str,
     }
     data = cast(
-        Optional[Dict[str, str]], safe_loads(request.get_json(), start_type),
+        Optional[Dict[str, str]], coerce_type(request.get_json(), start_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
@@ -120,34 +121,43 @@ def start() -> str:
     return ''
 
 
-@app.route('/status')
-def status() -> str:
+@app.route('/wait')
+def wait() -> str:
     """
-    Returns the status of a given room
+    Returns the status of a given room in WAITING
 
     Expects a POST in the following JSON format:
     {
-        "room_id": <room_id>
+        "room_id": <room_id>,
+        "player_id": <player_id>
     }
 
     Returns a string in the following JSON format:
     {
-        "status": <status>
+        "status": <status>,
+        "players": [
+            {
+                "name": <name>,
+                "color": <color>
+            }
+        ]
     }
     """
     status_type = {
         'room_id': str,
+        'player_id': str,
     }
     data = cast(
-        Optional[Dict[str, str]], safe_loads(request.get_json(), status_type),
+        Optional[Dict[str, str]], coerce_type(request.get_json(), status_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
     room_id = data['room_id']
+    player_id = data['player_id']
     if room_id not in rooms:
         return ''  # TODO: Better error handling
     r = rooms[room_id]
-    return r.status_json()
+    return r.wait_json(player_id)
 
 
 @app.route('/info')
@@ -169,7 +179,7 @@ def info() -> str:
         'room_id': str,
     }
     data = cast(
-        Optional[Dict[str, str]], safe_loads(request.get_json(), info_type),
+        Optional[Dict[str, str]], coerce_type(request.get_json(), info_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
@@ -206,7 +216,7 @@ def update() -> str:
     }
     data = cast(
         Optional[Dict[str, Union[str, Dict[str, int]]]],
-        safe_loads(request.get_json(), update_type),
+        coerce_type(request.get_json(), update_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
@@ -241,7 +251,7 @@ def end() -> str:
         'player_id': str,
     }
     data = cast(
-        Optional[Dict[str, str]], safe_loads(request.get_json(), end_type),
+        Optional[Dict[str, str]], coerce_type(request.get_json(), end_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
@@ -275,7 +285,7 @@ def vote() -> str:
     }
     data = cast(
         Optional[Dict[str, Union[str, int]]],
-        safe_loads(request.get_json(), end_type),
+        coerce_type(request.get_json(), end_type),
     )
     if data is None:
         return ''  # TODO: Better error handling
