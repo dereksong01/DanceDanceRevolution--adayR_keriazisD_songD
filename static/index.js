@@ -26,7 +26,16 @@ createButton.addEventListener('click', (e) => {
     if (createName.value === '') {
         return;
     }
-    send({'name': createName.value}, '/create', 'POST', console.log);
+    send({'name': createName.value}, '/create', 'POST',
+        ({'room_id': room_id, 'player_id': player_id}) => {
+            // console.log('room_id', room_id);
+            // console.log('player_id', player_id);
+            // window.localStorage.setItem('player_id', player_id);
+            window.sessionStorage.setItem('player_id', player_id);
+            window.sessionStorage.setItem('name', createName.value);
+            window.location.replace(`/room/${room_id}`);
+        }
+    );
 });
 
 joinButton.addEventListener('click', (e) => {
@@ -37,7 +46,11 @@ joinButton.addEventListener('click', (e) => {
     send({
         'name': joinName.value,
         'room_id': joinRoomId.value,
-    }, '/join', 'POST', console.log);
+    }, '/join', 'POST', ({'player_id': player_id}) => {
+        // window.localStorage.setItem('player_id', player_id);
+        window.sessionStorage.setItem('player_id', player_id);
+            window.sessionStorage.setItem('name', joinName.value);
+        window.location.replace(`/room/${joinRoomId.value}`);
+    });
 });
-
 
