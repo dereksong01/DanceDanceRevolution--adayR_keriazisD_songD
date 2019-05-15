@@ -5,7 +5,7 @@ from json import dumps
 from collections import Counter
 
 from util.ids import Id, gen_id
-from util.canvas import Canvas
+from util.canvas import Canvas, DrawId, Point, PointTuple
 from util.player import Player, PlayerId
 
 @unique
@@ -43,6 +43,21 @@ class Room:
         result = {'status': self.status.name, 'players': players}
         return dumps(result)
 
+    def canvas_json(self: 'Room', draw_id: DrawId) -> str:
+        data = self.canvas.get(draw_id)
+        if data is None:
+            return ''  # TODO: Better error handling
+        p, new_draw_id = data
+        result = {
+            'new_draw_id': new_draw_id,
+            'point': {
+                'x': p.x,
+                'y': p.y,
+                'color': p.color,
+            },
+        }
+        return dumps(result)
+
     def info_json(self: 'Room') -> str:
         pass
 
@@ -70,8 +85,21 @@ class Room:
                 self.end_game()
         return True
 
-    def end_game(self: 'Room') -> None:
+    def end_game(self: 'Room') -> bool:
         self.status = RoomStatus.CASTING
+        return True  # Anticipate the possibility of future success checking
+
+    def update(self: 'Room', player_id: PlayerId, point: PointTuple) -> bool:
+        if player_id not in self.players:
+            return False
+        # TODO: Uncomment this before production please
+        #  if len(self.order) <= self.turn:
+            #  return False
+        #  if self.order[self.turn] != player_id:
+            #  return False
+        player = self.players[player_id]
+        p = Point(point.x, point.y, player.color)
+        return self.canvas.add(p)
 
     def vote(self: 'Room', player_id: PlayerId, fake_arist_pos: int) -> bool:
         if self.status is not RoomStatus.CASTING:

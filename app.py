@@ -8,7 +8,7 @@ from flask import Flask, render_template, request
 from util.safe_json import coerce_type
 from util.room import RoomId, Room, RoomStatus
 from util.player import Player
-from util.canvas import Point
+from util.canvas import PointTuple
 from util.config import config
 
 app = Flask(__name__)
@@ -144,6 +144,39 @@ def wait() -> str:
     return r.wait_json(data.player_id)
 
 
+@app.route('/canvas', methods=['POST'])
+def canvas() -> str:
+    """
+    Returns game information for a given room
+
+    Expects a POST in the following JSON format:
+    {
+        "room_id": <room_id>,
+        "draw_id": <draw_id>
+    }
+
+    Returns a string in the following JSON format:
+    {
+        "point": {
+            "color": <color>,
+            "x": <x>,
+            "y": <y>
+        },
+        "new_draw_id": <new_draw_id>
+    }
+    """
+    class Canvas(NamedTuple):
+        room_id: str
+        draw_id: str
+    data = cast(Optional[Canvas], coerce_type(request.get_json(), Canvas))
+    if data is None:
+        return ''  # TODO: Better error handling
+    if data.room_id not in rooms:
+        return ''  # TODO: Better error handling
+    r = rooms[data.room_id]
+    return r.canvas_json(data.draw_id)
+
+
 @app.route('/info')
 def info() -> str:
     """
@@ -186,9 +219,6 @@ def update() -> str:
         }
     }
     """
-    class PointTuple(NamedTuple):
-        x: int
-        y: int
     class Update(NamedTuple):
         room_id: str
         player_id: str
@@ -199,12 +229,9 @@ def update() -> str:
     if data.room_id not in rooms:
         return ''  # TODO: Better error handling
     r = rooms[data.room_id]
-    if data.player_id not in r.players:
+    success = r.update(data.player_id, data.point)
+    if not success:
         return ''  # TODO: Better error handling
-    player = r.players[data.player_id]
-    color = player.color
-    p = Point(data.point.x, data.point.y, color)
-    r.canvas.add(p)
     return ''
 
 
