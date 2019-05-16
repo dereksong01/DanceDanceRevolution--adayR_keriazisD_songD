@@ -157,11 +157,13 @@ def canvas() -> str:
 
     Returns a string in the following JSON format:
     {
-        "point": {
-            "color": <color>,
-            "x": <x>,
-            "y": <y>
-        },
+        "points": [
+            {
+                "color": <color>,
+                "x": <x>,
+                "y": <y>
+            }
+        ],
         "new_draw_id": <new_draw_id>
     }
     """

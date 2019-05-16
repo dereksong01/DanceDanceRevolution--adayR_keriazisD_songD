@@ -93,16 +93,19 @@ var updateCanvas = () => {
         'draw_id': draw_id,
     }, '/canvas', 'POST', ({
         'new_draw_id': new_draw_id,
-        'point': {
+        'points': points,
+    }) => {
+        console.log(points);
+        for (const {
             'x': x,
             'y': y,
             'color': color,
-        },
-    }) => {
-        draw_id = new_draw_id;
-        // context.fillStyle = color;
-        context.fillStyle = 'red';
-        drawCircle(x, y, 10);
+        } of points) {
+            draw_id = new_draw_id;
+            // context.fillStyle = color;
+            context.fillStyle = 'red';
+            drawCircle(x, y, 10);
+        }
     });
     updateRequestId = window.requestAnimationFrame(updateCanvas);
 };

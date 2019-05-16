@@ -50,11 +50,13 @@ class Room:
         p, new_draw_id = data
         result = {
             'new_draw_id': new_draw_id,
-            'point': {
-                'x': p.x,
-                'y': p.y,
-                'color': p.color,
-            },
+            'points': [
+                {
+                    'x': p.x,
+                    'y': p.y,
+                    'color': p.color,
+                },
+            ],
         }
         return dumps(result)
 
