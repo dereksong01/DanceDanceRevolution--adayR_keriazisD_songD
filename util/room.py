@@ -89,7 +89,7 @@ class Room:
         self.status = RoomStatus.CASTING
         return True  # Anticipate the possibility of future success checking
 
-    def update(self: 'Room', player_id: PlayerId, point: PointTuple) -> bool:
+    def update(self: 'Room', player_id: PlayerId, points: List[PointTuple]) -> bool:
         if player_id not in self.players:
             return False
         # TODO: Uncomment this before production please
@@ -98,8 +98,10 @@ class Room:
         #  if self.order[self.turn] != player_id:
             #  return False
         player = self.players[player_id]
-        p = Point(point.x, point.y, player.color)
-        return self.canvas.add(p)
+        for point in points:
+            p = Point(point.x, point.y, player.color)
+            self.canvas.add(p)
+        return True
 
     def vote(self: 'Room', player_id: PlayerId, fake_arist_pos: int) -> bool:
         if self.status is not RoomStatus.CASTING:

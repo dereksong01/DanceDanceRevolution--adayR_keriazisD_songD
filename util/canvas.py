@@ -18,11 +18,10 @@ class Canvas:
         self.init_id = ''
         self.last_id = self.init_id
 
-    def add(self: 'Canvas', p: Point) -> bool:
+    def add(self: 'Canvas', p: Point) -> None:
         new_id = gen_id(64)
         self.points[self.last_id] = (p, new_id)
         self.last_id = new_id
-        return True  # Anticipate the possibility of future success checking
 
     def get(self: 'Canvas', p: DrawId) -> Optional[Tuple[Point, DrawId]]:
         return self.points.get(p)

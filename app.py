@@ -1,7 +1,7 @@
 # Team DanceDanceRevolution
 
 from json import dumps
-from typing import Dict, Optional, Union, cast, NamedTuple
+from typing import Dict, Optional, Union, cast, NamedTuple, List
 
 from flask import Flask, render_template, request
 
@@ -213,23 +213,26 @@ def update() -> str:
     {
         "room_id": <room_id>,
         "player_id": <player_id>,
-        "point": {
-            "x": <x>,
-            "y": <y>
-        }
+        "points": [
+            {
+                "x": <x>,
+                "y": <y>
+            }
+        ]
     }
     """
     class Update(NamedTuple):
         room_id: str
         player_id: str
-        point: PointTuple
+        points: List[PointTuple]
     data = cast(Optional[Update], coerce_type(request.get_json(), Update))
     if data is None:
         return ''  # TODO: Better error handling
+    print(data)
     if data.room_id not in rooms:
         return ''  # TODO: Better error handling
     r = rooms[data.room_id]
-    success = r.update(data.player_id, data.point)
+    success = r.update(data.player_id, data.points)
     if not success:
         return ''  # TODO: Better error handling
     return ''

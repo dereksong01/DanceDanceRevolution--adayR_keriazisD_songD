@@ -1,6 +1,6 @@
 from json import loads
 from enum import Enum, auto, unique
-from typing import Union, List, Dict, Optional, GenericMeta
+from typing import Union, List, Dict, Optional, GenericMeta, Any
 
 @unique
 class OnError(Enum):
@@ -10,8 +10,10 @@ class OnError(Enum):
     RAISE_EXCEPTION = auto()
 
 InType = Union[int, float, str, bool, List['InType'], Dict[str, 'InType']]
-OutType = Union[type, GenericMeta]
-ReturnType = Union[None, int, float, str, bool, List['ReturnType']]
+#  OutType = Union[type, GenericMeta]
+OutType = Any
+#  ReturnType = Union[None, int, float, str, bool, List['ReturnType']]
+ReturnType = Any
 
 def coerce_type(
         d: InType, t: OutType, on_error: OnError = OnError.RETURN_NONE,

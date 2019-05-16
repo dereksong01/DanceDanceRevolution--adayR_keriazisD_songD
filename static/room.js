@@ -43,6 +43,8 @@ var drawCircle = (x /*: number*/, y /*: number*/, r /*: number*/) => {
 };
 
 let drawRequestId;
+let lastMouseX;
+let lastMouseY;
 
 var draw = (e /*: MouseEvent*/) => {
     window.cancelAnimationFrame(drawRequestId);
@@ -52,14 +54,21 @@ var draw = (e /*: MouseEvent*/) => {
     context.fillStyle = 'red';
     const x = e.clientX - minX;
     const y = e.clientY - minY;
+    if (lastMouseX === x && lastMouseY === y) {
+        return;
+    }
+    lastMouseX = x;
+    lastMouseY = y;
     drawCircle(x, y, 10);
     send({
         'room_id': room_id,
         'player_id': player_id,
-        'point': {
-            'x': x,
-            'y': y,
-        },
+        'points': [
+            {
+                'x': x,
+                'y': y,
+            },
+        ],
     }, '/update', 'POST', () => {});
     drawRequestId = window.requestAnimationFrame(() => draw(e));
 };
@@ -71,7 +80,7 @@ let updateRequestId;
 let draw_id = '';
 
 // For debugging
-let dbg = false;
+let dbg = true;
 
 var updateCanvas = () => {
     window.cancelAnimationFrame(updateRequestId);
@@ -91,9 +100,12 @@ var updateCanvas = () => {
         },
     }) => {
         draw_id = new_draw_id;
-        context.fillStyle = color;
+        // context.fillStyle = color;
+        context.fillStyle = 'red';
         drawCircle(x, y, 10);
     });
     updateRequestId = window.requestAnimationFrame(updateCanvas);
 };
+
+updateCanvas();
 
