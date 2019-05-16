@@ -3,6 +3,8 @@
 const canvas /*: HTMLCanvasElement*/ = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 
+const endTurnButton = document.getElementById('endTurnButton');
+
 const room_id /*: string*/ = window.sessionStorage.getItem('room_id');
 const player_id /*: string*/ = window.sessionStorage.getItem('player_id');
 const name /*: string*/ = window.sessionStorage.getItem('name');
@@ -14,7 +16,7 @@ let mouseDown = false;
 document.addEventListener('mousedown', () => {mouseDown = true;});
 document.addEventListener('mouseup', () => {mouseDown = false;});
 
-var send = (payload, url, method, callback) => {
+var send = (payload, url /*: string */, method /*: string */, callback) => {
     const xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -111,4 +113,11 @@ var updateCanvas = () => {
 };
 
 updateCanvas();
+
+endTurnButton.addEventListener('click', () => {
+    send({
+        'room_id': room_id,
+        'player_id': player_id,
+    }, '/end', 'POST', () => {});
+});
 
