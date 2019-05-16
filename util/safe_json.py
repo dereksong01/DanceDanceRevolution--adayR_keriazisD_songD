@@ -1,6 +1,6 @@
 from json import loads
 from enum import Enum, auto, unique
-from typing import Union, List, Dict, Optional
+from typing import Union, List, Dict, Optional, GenericMeta
 
 @unique
 class OnError(Enum):
@@ -10,7 +10,7 @@ class OnError(Enum):
     RAISE_EXCEPTION = auto()
 
 InType = Union[int, float, str, bool, List['InType'], Dict[str, 'InType']]
-OutType = Union[type, List['OutType']]
+OutType = Union[type, GenericMeta]
 ReturnType = Union[None, int, float, str, bool, List['ReturnType']]
 
 def coerce_type(
@@ -26,7 +26,8 @@ def coerce_type(
     used in, so this isn't seen as a problem worth adding extra complication
     to fix.
     """
-    if isinstance(t, list):
+    #  if isinstance(t, list):
+    if hasattr(t, '__origin__') and t.__origin__ is List:
         if not isinstance(d, list):
             if on_error is OnError.SET_FIELDS_NONE:
                 return None
@@ -41,14 +42,19 @@ def coerce_type(
             assert False
         result_list: List[ReturnType] = []
         for i in d:
-            found_matching_type = False
-            for try_type in t:
-                v = coerce_type(i, try_type, OnError.RETURN_NONE)
-                if v is None:
-                    continue
+            #  found_matching_type = False
+            #  for try_type in t:
+                #  v = coerce_type(i, try_type, OnError.RETURN_NONE)
+                #  if v is None:
+                    #  continue
+                #  result_list.append(v)
+                #  found_matching_type = True
+            expected = t.__args__[0]
+            v = coerce_type(i, expected, OnError.RETURN_NONE)
+            if v is not None:
                 result_list.append(v)
-                found_matching_type = True
-            if not found_matching_type:
+            #  if not found_matching_type:
+            else:
                 if on_error is OnError.SET_FIELDS_NONE:
                     result_list.append(None)
                     continue
@@ -57,7 +63,8 @@ def coerce_type(
                 elif on_error is OnError.IGNORE:
                     continue
                 elif on_error is OnError.RAISE_EXCEPTION:
-                    raise TypeError(f'Expected dict but got `{d}` of type {type(d)}')
+                    #  raise TypeError(f'Expected dict but got `{d}` of type {type(d)}')
+                    raise TypeError(f'Expected {expected} but got `{d}` of type {type(d)}')
                 # We raise an exception to assure static checkers
                 # that our enumeration was exhaustive
                 assert False
