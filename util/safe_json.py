@@ -1,6 +1,11 @@
 from json import loads
 from enum import Enum, auto, unique
-from typing import Union, List, Dict, Optional, GenericMeta, Any
+try:
+    from typing import GenericMeta  # python 3.6
+except ImportError:
+    # in 3.7, genericmeta doesn't exist but we don't need it
+    class GenericMeta(type): pass
+from typing import Union, List, Dict, Optional, Any
 
 @unique
 class OnError(Enum):
@@ -164,4 +169,3 @@ def safe_loads(
         # that our enumeration was exhaustive
         assert False
     return coerce_type(j, t, on_error)
-

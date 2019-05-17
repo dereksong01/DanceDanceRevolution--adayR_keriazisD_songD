@@ -1,6 +1,13 @@
 # Team DanceDanceRevolution
 
 from json import dumps
+
+try:
+    from typing import GenericMeta  # python 3.6
+except ImportError:
+    # in 3.7, genericmeta doesn't exist but we don't need it
+    class GenericMeta(type): pass
+
 from typing import Dict, Optional, Union, cast, NamedTuple, List
 
 from flask import Flask, render_template, request
@@ -297,4 +304,3 @@ def vote() -> str:
 if __name__ == '__main__':
     app.debug = __debug__  # Run `python -O` to set to False
     app.run()
-
