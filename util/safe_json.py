@@ -1,10 +1,5 @@
 from json import loads
 from enum import Enum, auto, unique
-try:
-    from typing import GenericMeta  # python 3.6
-except ImportError:
-    # in 3.7, genericmeta doesn't exist but we don't need it
-    class GenericMeta(type): pass
 from typing import Union, List, Dict, Optional, Any
 
 @unique
@@ -15,9 +10,7 @@ class OnError(Enum):
     RAISE_EXCEPTION = auto()
 
 InType = Union[int, float, str, bool, List['InType'], Dict[str, 'InType']]
-#  OutType = Union[type, GenericMeta]
 OutType = Any
-#  ReturnType = Union[None, int, float, str, bool, List['ReturnType']]
 ReturnType = Any
 
 def coerce_type(
