@@ -19,9 +19,25 @@ Logged-in users will be able to create a new blog, update their blog by adding a
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-ryanA -- 2019-05-06 13:44
+ryanA -- 2019-5-6 13:44
+------------------------------------------
 Made devlog
+------------------------------------------
 
-ryanA -- 2019-05-14 1:29
+ryanA -- 2019-5-14 13:29
+------------------------------------------
 Modified doc folder
+------------------------------------------
 
+danielK -- 2019-5-16 13:29
+------------------------------------------
+Created a function that creates a random room key whenever you create a name.
+Database in development.
+------------------------------------------
+
+derekS -- 2019-5-20 14:03
+------------------------------------------
+Currently trying to fix internal server errors on other machines.
+Gradually using our bootstrap frontend framework to make it look better.
+Created our own custom css file today as well.
+------------------------------------------
