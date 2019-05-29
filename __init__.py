@@ -315,5 +315,5 @@ def vote() -> str:
 
 
 if __name__ == "__main__":
-    app.debug = __debug__  # Run `python -O` to set to False
-    app.run()
+    app.debug = True
+    app.run(host="0.0.0.0")
