@@ -23,6 +23,10 @@ def index() -> str:
     return render_template("index.html")
 
 
+@app.route("/howtoplay")
+def howtoplay() -> str:
+    return render_template("howtoplay.html")
+
 @app.route("/join", methods=["POST"])
 def join() -> str:
     """
