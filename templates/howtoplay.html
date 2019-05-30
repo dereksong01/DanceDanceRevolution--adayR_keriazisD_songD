@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      {% block head %}
+        <title>Fake Artist- How To Play</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel = "stylesheet" href="/static/css/index.css">
+      {% endblock %}
+
+    </head>
+    <body>
+      <h1>How to Play fake Artist</h1>
+      <p>Welcome to Fake Artist!  The rules are simple:
+        <br/>
+        1) A category is chosen before the start of the game (e.g. Animals).
+        <br/>
+        2) A word in that category is randomly chosen by the computer (we
+        could have a preset of words and categories, that part should be very
+        trivial)
+        <br/>
+        3) This word is given to all players in the game EXCEPT for one. The
+        player that does not receive a word is designated the "Fake Artist"
+        <br/>
+        4) Players take turns drawing one line each on a sheet of paper (or in
+        our case a javascript canvas). The players' goal is to draw an image
+        of the word they received. The fake artist does not know the word and
+        so must use other players' lines to try and guess what the image is.
+        <br/>
+        5) After a set amount of cycles (let's say five), the game ends and
+        the players vote on who they think the fake artist is. If they guess
+        wrong, the Fake Artist wins, otherwise the Fake Artist loses.
+        <br/>
+        Have fun!
+    </body>
+  </html>
