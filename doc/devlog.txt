@@ -41,3 +41,10 @@ Currently trying to fix internal server errors on other machines.
 Gradually using our bootstrap frontend framework to make it look better.
 Created our own custom css file today as well.
 ------------------------------------------
+
+derekS -- 2019-5-30 14:00
+------------------------------------------
+Server works!
+Currently working on trying robustify the HTML code with some jinja
+Multiplayer is also functional but laggy. Will look into that.
+------------------------------------------
