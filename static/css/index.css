@@ -5,10 +5,18 @@ h1 {
 ol {
   padding-left: 240px
 }
-html {
-  background: url(https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwjsmuWirMbiAhXCmeAKHUqmB88QjRx6BAgBEAU&url=https%3A%2F%2Foinkgms.com%2Fen%2Fa-fake-artist-goes-to-new-york&psig=AOvVaw22cA20NAEeVGp350Gjz1hT&ust=1559411922522821) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+img.bg {
+    min-height: 100%;
+    min-width: 1024px;
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+@media screen and (max-width: 1024px){
+    img.bg {
+    left: 50%;
+    margin-left: -512px; }
 }
