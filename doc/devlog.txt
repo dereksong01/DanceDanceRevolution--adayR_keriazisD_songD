@@ -48,3 +48,12 @@ Server works!
 Currently working on trying robustify the HTML code with some jinja
 Multiplayer is also functional but laggy. Will look into that.
 ------------------------------------------
+ryanA -- 2019-6-5 14:03
+------------------------------------------
+Need to address server issues encountered earlier- constant internal server error with droplet,
+fixed host number in __init__.py file.  Call <<Ip address>>:5000 and website should pop up.
+
+-tasks to do (Priorities)
+#1- Figure out how to do multiplayer more responsive/less laggy
+#2- figure out endgame system/turn system
+#3- Frontend html/css
