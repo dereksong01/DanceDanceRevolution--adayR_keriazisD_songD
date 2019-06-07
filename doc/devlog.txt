@@ -57,3 +57,19 @@ fixed host number in __init__.py file.  Call <<Ip address>>:5000 and website sho
 #1- Figure out how to do multiplayer more responsive/less laggy
 #2- figure out endgame system/turn system
 #3- Frontend html/css
+
+ryanA -- 2019-6-7 07:14
+------------------------------------------
+Basically broke website when editing locally yesterday, so reverted code backk to normal.
+-tasks solved
+#1- Figure out how to do multiplayer more responsive/less laggy- hosting the server using
+a strong internet connection seems to do the job.  School wifi was slow and it was rainy during
+testing, meaning that site was slow do to it.
+#2- figure out endgame system/turn system-
+That's what broke the website.  Getting really late so I scrapped it.
+#3- Frontend html/css
+Improved.
+
+Things to note:
+DO NOT RUN program on my(Ryan) laptop.  Apparently canvas doesn't display properly on it.
+Sorry Mr. Brown, wish  could've done more.
