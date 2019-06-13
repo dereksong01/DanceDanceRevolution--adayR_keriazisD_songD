@@ -1,12 +1,11 @@
 
-
-
 # DanceDanceRevolution--adayR_keriazisD_songD
 
-<!-- The user will be able to add to/edit their previous posts via an edit button, which redirects them to a different page for that feature. -->
-Ryan Aday-
-Hyperlink with visible text “Watch our video demo here” -- pointing to your video on YouTube
+Ryan Aday- Server
+Derek Song- Frontend
+Daniel Keriazis- Backend
 
+Watch our video demo here: https://youtu.be/bXy-10tEfa4
 
 ## Dependencies
 - An Ubuntu 18.04 server
